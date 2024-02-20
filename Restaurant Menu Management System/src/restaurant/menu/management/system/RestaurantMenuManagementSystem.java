@@ -12,7 +12,7 @@ class MenuItem {
     }
 }
 
-class BinarySearchTree {
+class BinarySearchTree { //get menu items for build alpherbartical order
     class TreeNode {
         MenuItem menuItem;
         TreeNode left, right;
@@ -65,72 +65,9 @@ class BinarySearchTree {
     }
 }
 
-class PriceBinarySearchTree {
-    class TreeNode {
-        MenuItem menuItem;
-        TreeNode left, right;
-
-        public TreeNode(MenuItem item) {
-            this.menuItem = item;
-            this.left = this.right = null;
-        }
-    }
-
-    private TreeNode root;
-
-    public PriceBinarySearchTree() {
-        this.root = null;
-    }
-
-    public void insert(MenuItem item) {
-        root = insertRec(root, item);
-    }
-
-    private TreeNode insertRec(TreeNode root, MenuItem item) {
-        if (root == null) {
-            root = new TreeNode(item);
-            return root;
-        }
-
-        if (item.price < root.menuItem.price) {
-            root.left = insertRec(root.left, item);
-        } else if (item.price > root.menuItem.price) {
-            root.right = insertRec(root.right, item);
-        } else 
-        {
-            if (item.name.compareTo(root.menuItem.name) < 0) {
-            root.left = insertRec(root.left, item);
-            } 
-            else if (item.name.compareTo(root.menuItem.name) > 0) {
-            root.right = insertRec(root.right, item);
-            } 
-            else 
-            {
-            System.out.println("This Dish " + "(" + item.name + ")" + " already in the menu");
-            }
-        }
-
-        return root;
-    }
-
-    // In-order traversal to get items sorted by low to high prices
-    public void inorder() {
-        inorderRec(root);
-    }
-
-    private void inorderRec(TreeNode root) {
-        if (root != null) {
-            inorderRec(root.left);
-            System.out.println("Name: " + root.menuItem.name + ", Price: " + root.menuItem.price);
-            inorderRec(root.right);
-        }
-    }
-}
-
 public class RestaurantMenuManagementSystem {
     public static void main(String[] args) {
         BinarySearchTree bst = new BinarySearchTree();
-        PriceBinarySearchTree priceBST = new PriceBinarySearchTree();
         Scanner scanner = new Scanner(System.in);
 
         // Getting menu items from the user
@@ -144,9 +81,8 @@ public class RestaurantMenuManagementSystem {
                 String name = inputParts[0];
                 double price = Double.parseDouble(inputParts[1]);
 
-                // Inserting into both BSTs
+                // Inserting into BSTs
                 bst.insert(new MenuItem(name, price));
-                priceBST.insert(new MenuItem(name, price));
             } else {
                 System.out.println("Invalid input. Please enter Dish Name and Price separated by space."
                         + "Ex:- Pizza 890.00 ");
@@ -157,8 +93,5 @@ public class RestaurantMenuManagementSystem {
         System.out.println("\nMenu Items in Alphabetical Order:");
         bst.inorder();
 
-        // Displaying menu items arcorrding to price 
-        System.out.println("\nMenu Items from low price to high price:");
-        priceBST.inorder();
     }
 }
