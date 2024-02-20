@@ -63,8 +63,103 @@ class BinarySearchTree {
             inorderRec(root.right);
         }
     }
+    
+    //update the price of the dish using item name(dish name)
+    public void update(String itemName, double newPrice) {
+        root = updateRec(root, itemName, newPrice);
+    }
+
+    private TreeNode updateRec(TreeNode root, String itemName, double newPrice) {
+        if (root == null) {
+            System.out.println("Dish " + "(" + itemName + ")" + " not found in the menu");
+            return null;
+        }
+
+        int compareResult = itemName.compareTo(root.menuItem.name);
+
+        if (compareResult < 0) {
+            root.left = updateRec(root.left, itemName, newPrice);
+        } else if (compareResult > 0) {
+            root.right = updateRec(root.right, itemName, newPrice);
+        } else {
+            // Item found, update the price
+            root.menuItem.price = newPrice;
+            System.out.println("Dish " + "(" + itemName + ")" + " updated with new price: " + newPrice);
+        }
+
+        return root;
+    }
+    // Delete the dish with the specified name
+    public void delete(String itemName) {
+        root = deleteRec(root, itemName);
+    }
+
+    private TreeNode deleteRec(TreeNode root, String itemName) {
+        if (root == null) {
+            System.out.println("Dish " + "(" + itemName + ")" + " not found in the menu");
+            return null;
+        }
+
+        int compareResult = itemName.compareTo(root.menuItem.name);
+
+        if (compareResult < 0) {
+            root.left = deleteRec(root.left, itemName);
+        } else if (compareResult > 0) {
+            root.right = deleteRec(root.right, itemName);
+        } else {
+            // Item found, delete the node
+            if (root.left == null) {
+                return root.right;
+            } else if (root.right == null) {
+                return root.left;
+            }
+
+            // Node with two children: Get the inorder successor (smallest in the right subtree)
+            root.menuItem = minValue(root.right);
+
+            // Delete the inorder successor
+            root.right = deleteRec(root.right, root.menuItem.name);
+        }
+
+        return root;
+    }
+
+    private MenuItem minValue(TreeNode root) {
+        MenuItem minValue = root.menuItem;
+        while (root.left != null) {
+            minValue = root.left.menuItem;
+            root = root.left;
+        }
+        return minValue;
+    }
+    
+    //Search the price with dish name
+    public void searchAndPrintPrice(String itemName) {
+    TreeNode foundNode = search(root, itemName);
+    if (foundNode != null) {
+        System.out.println("Price of " + itemName + ": " + foundNode.menuItem.price);
+    } else {
+        System.out.println("Dish " + "(" + itemName + ")" + " not found in the menu");
+        }
+    }
+
+    private TreeNode search(TreeNode root, String itemName) {
+        if (root == null || root.menuItem.name.equals(itemName)) {
+            return root;
+        }
+
+        int compareResult = itemName.compareTo(root.menuItem.name);
+
+        if (compareResult < 0) {
+            return search(root.left, itemName);
+        } else {
+            return search(root.right, itemName);
+        }
+    }
+
 }
 
+//price look up class
 class PriceBinarySearchTree {
     class TreeNode {
         MenuItem menuItem;
@@ -130,7 +225,7 @@ class PriceBinarySearchTree {
 public class RestaurantMenuManagementSystem {
     public static void main(String[] args) {
         BinarySearchTree bst = new BinarySearchTree();
-        PriceBinarySearchTree priceBST = new PriceBinarySearchTree();
+        PriceBinarySearchTree PBST = new PriceBinarySearchTree();
         Scanner scanner = new Scanner(System.in);
 
         // Getting menu items from the user
@@ -146,7 +241,7 @@ public class RestaurantMenuManagementSystem {
 
                 // Inserting into both BSTs
                 bst.insert(new MenuItem(name, price));
-                priceBST.insert(new MenuItem(name, price));
+                PBST.insert(new MenuItem(name, price));
             } else {
                 System.out.println("Invalid input. Please enter Dish Name and Price separated by space."
                         + "Ex:- Pizza 890.00 ");
@@ -159,6 +254,72 @@ public class RestaurantMenuManagementSystem {
 
         // Displaying menu items arcorrding to price 
         System.out.println("\nMenu Items from low price to high price:");
-        priceBST.inorder();
+        PBST.inorder();
+        
+        int choice;
+
+        do {
+            System.out.println("\nMenu:");
+            System.out.println("1. Search for a dish and print its price");
+            System.out.println("2. Update the price of a dish");
+            System.out.println("3. Delete a dish from the menu");
+            System.out.println("4. Exit");
+            System.out.print("Enter your choice: ");
+
+            choice = scanner.nextInt();
+            scanner.nextLine(); // newline
+
+            switch (choice) {
+                case 1:
+                    // Getting user input for searching a menu item
+                    System.out.println("\nEnter the dish name to search in the menu:");
+                    String dishToSearch = scanner.nextLine();
+
+                    // Searching for the specified dish and printing its price
+                    bst.searchAndPrintPrice(dishToSearch);
+                    break;
+
+                case 2:
+                    // Getting user input for updating dish price
+                    System.out.println("\nEnter the dish name to update the price:");
+                    String dishToUpdate = scanner.nextLine();
+
+                    //Set new price
+                    System.out.println("Enter the new price for " + dishToUpdate + ":");
+                    double newPrice = scanner.nextDouble();
+                    scanner.nextLine();
+
+                    // Update the price of the specified dish
+                    bst.update(dishToUpdate, newPrice);
+                    
+                    // Displaying updated menu items in alphabetical order with prices
+                    System.out.println("\nUpdated Menu Items in Alphabetical Order:");
+                    bst.inorder();
+                    break;
+
+                case 3:
+                    // Deleting a menu item
+                    System.out.println("\nEnter the dish name to delete from the menu:");
+                    String dishToDelete = scanner.nextLine();
+
+                    // Delete specified dish
+                    bst.delete(dishToDelete);
+
+                    // Display updated menu items in alphabetical order with prices after deletion
+                    System.out.println("\nUpdated Menu Items in Alphabetical Order (after deletion):");
+                    bst.inorder();
+                    break;
+
+                case 4:
+                    System.out.println("Exiting the program.");
+                    break;
+
+                default:
+                    System.out.println("Invalid choice. Please enter a valid option.");
+            }
+
+        } while (choice != 4);
+
+        scanner.close();
     }
 }
