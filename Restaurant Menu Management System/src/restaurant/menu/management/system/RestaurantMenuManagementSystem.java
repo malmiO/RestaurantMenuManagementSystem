@@ -232,46 +232,15 @@ public class RestaurantMenuManagementSystem {
         PriceBinarySearchTree PBST = new PriceBinarySearchTree();
         Scanner scanner = new Scanner(System.in);
 
-        // Getting menu items from the user
-        System.out.println("Enter menu items (Dish Name and Price). "
-                + "Ex:- Pizza 890.00 "
-                + " To finish for adding items type 'done' .");
-        String input;
-        while (!(input = scanner.nextLine()).equalsIgnoreCase("done")) {
-            String[] inputParts = input.split(" ");
-            if (inputParts.length == 2) {
-                String name = inputParts[0];
-                try {
-                    double price = Double.parseDouble(inputParts[1]);
-
-                    // Inserting into both BSTs
-                    bst.insert(new MenuItem(name, price));
-                    PBST.insert(new MenuItem(name, price));
-                } catch (NumberFormatException e) {
-                    System.out.println("Invalid price format. Please enter a valid number.");
-                }
-            } else {
-                System.out.println("Invalid input. Please enter Dish Name and Price separated by space."
-                        + "Ex:- Pizza 890.00 ");
-            }
-        }
-
-        // Displaying menu items in alphabetical order with prices
-        System.out.println("\nMenu Items in Alphabetical Order:");
-        bst.inorder();
-
-        // Displaying menu items arcorrding to price 
-        System.out.println("\nMenu Items from low price to high price:");
-        PBST.inorder();
-
         int choice;
 
         do {
             System.out.println("\nMenu:");
-            System.out.println("1. Search for a dish and print its price");
-            System.out.println("2. Update the price of a dish");
-            System.out.println("3. Delete a dish from the menu");
-            System.out.println("4. Exit");
+            System.out.println("1. Add Dish");
+            System.out.println("2. Search for a dish and print its price");
+            System.out.println("3. Update the price of a dish");
+            System.out.println("4. Delete a dish from the menu");
+            System.out.println("5. Exit");
             System.out.print("Enter your choice: ");
 
             try {
@@ -280,6 +249,40 @@ public class RestaurantMenuManagementSystem {
 
                 switch (choice) {
                     case 1:
+                        // Getting menu items from the user
+                        System.out.println("\nEnter menu items (Dish Name and Price). "
+                                + "Ex:- Pizza 890.00 "
+                                + " To finish for adding items type 'done' .");
+                        String input;
+                        while (!(input = scanner.nextLine()).equalsIgnoreCase("done")) {
+                            String[] inputParts = input.split(" ");
+                            if (inputParts.length == 2) {
+                                String name = inputParts[0];
+                                try {
+                                    double price = Double.parseDouble(inputParts[1]);
+
+                                    // Inserting into both BSTs
+                                    bst.insert(new MenuItem(name, price));
+                                    PBST.insert(new MenuItem(name, price));
+                                } catch (NumberFormatException e) {
+                                    System.out.println("Invalid price format. Please enter a valid number.");
+                                }
+                            } else {
+                                System.out.println("Invalid input. Please enter Dish Name and Price separated by space."
+                                        + "Ex:- Pizza 890.00 ");
+                            }
+                        }
+
+                        // Displaying menu items in alphabetical order with prices
+                        System.out.println("\nMenu Items in Alphabetical Order:");
+                        bst.inorder();
+
+                        // Displaying menu items arcorrding to price
+                        System.out.println("\nMenu Items from low price to high price:");
+                        PBST.inorder();
+                        break;
+
+                    case 2:
                         // Getting user input for searching a menu item
                         System.out.println("\nEnter the dish name to search in the menu:");
                         String dishToSearch = scanner.nextLine();
@@ -288,7 +291,7 @@ public class RestaurantMenuManagementSystem {
                         bst.searchAndPrintPrice(dishToSearch);
                         break;
 
-                    case 2:
+                    case 3:
                         // Getting user input for updating dish price
                         System.out.println("\nEnter the dish name to update the price:");
                         String dishToUpdate = scanner.nextLine();
@@ -306,7 +309,7 @@ public class RestaurantMenuManagementSystem {
                         bst.inorder();
                         break;
 
-                    case 3:
+                    case 4:
                         // Deleting a menu item
                         System.out.println("\nEnter the dish name to delete from the menu:");
                         String dishToDelete = scanner.nextLine();
@@ -319,7 +322,7 @@ public class RestaurantMenuManagementSystem {
                         bst.inorder();
                         break;
 
-                    case 4:
+                    case 5:
                         System.out.println("Exiting the program.");
                         break;
 
@@ -333,7 +336,7 @@ public class RestaurantMenuManagementSystem {
                 choice = 0; // Reset choice to force re-entry
             }
 
-        } while (choice != 4);
+        } while (choice != 5);
 
         scanner.close();
     }
