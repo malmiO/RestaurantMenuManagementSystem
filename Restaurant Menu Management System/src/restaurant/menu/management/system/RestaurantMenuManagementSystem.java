@@ -40,9 +40,9 @@ class BinarySearchTree {
             return root;
         }
 
-        if (item.name.compareTo(root.menuItem.name) < 0) {
+        if (item.name.compareToIgnoreCase(root.menuItem.name) < 0) {
             root.left = insertRec(root.left, item);
-        } else if (item.name.compareTo(root.menuItem.name) > 0) {
+        } else if (item.name.compareToIgnoreCase(root.menuItem.name) > 0) {
             root.right = insertRec(root.right, item);
         } else {
             //if equal both items then it's displayed and ignore dish name and price storing
@@ -83,7 +83,7 @@ class BinarySearchTree {
             return null;
         }
 
-        int compareResult = itemName.compareTo(root.menuItem.name);
+        int compareResult = itemName.compareToIgnoreCase(root.menuItem.name);
 
         if (compareResult < 0) {
             root.left = updateRec(root.left, itemName, newPrice);
@@ -109,7 +109,7 @@ class BinarySearchTree {
             return null;
         }
 
-        int compareResult = itemName.compareTo(root.menuItem.name);
+        int compareResult = itemName.compareToIgnoreCase(root.menuItem.name);
 
         if (compareResult < 0) {
             root.left = deleteRec(root.left, itemName);
@@ -153,11 +153,11 @@ class BinarySearchTree {
     }
 
     private TreeNode search(TreeNode root, String itemName) {
-        if (root == null || root.menuItem.name.equals(itemName)) {
+        if (root == null || root.menuItem.name.equalsIgnoreCase(itemName)) {
             return root;
         }
 
-        int compareResult = itemName.compareTo(root.menuItem.name);
+        int compareResult = itemName.compareToIgnoreCase(root.menuItem.name);
 
         if (compareResult < 0) {
             return search(root.left, itemName);
