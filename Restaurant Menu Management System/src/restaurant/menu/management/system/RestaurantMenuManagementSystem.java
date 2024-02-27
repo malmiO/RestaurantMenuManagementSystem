@@ -1,7 +1,6 @@
 package restaurant.menu.management.system;
 
 import java.util.Scanner;
-import java.util.InputMismatchException;
 
 class MenuItem {
     String name;
@@ -60,7 +59,7 @@ class BinarySearchTree {
     private void inorderRec(TreeNode root) {
         if (root != null) {
             inorderRec(root.left);
-            System.out.println("Name: " + root.menuItem.name + ", Price: " + root.menuItem.price);
+            System.out.println("Name: " + root.menuItem.name + ", Price: Rs." + root.menuItem.price);
             inorderRec(root.right);
         }
     }
@@ -92,7 +91,7 @@ class BinarySearchTree {
         } else {
             // Item found, update the price
             root.menuItem.price = newPrice;
-            System.out.println("Dish " + "(" + itemName + ")" + " updated with new price: " + newPrice);
+            System.out.println("Dish " + "(" + itemName + ")" + " updated with new price: Rs." + newPrice);
         }
 
         return root;
@@ -220,9 +219,84 @@ class PriceBinarySearchTree {
     private void inorderRec(TreeNode root) {
         if (root != null) {
             inorderRec(root.left);
-            System.out.println("Name: " + root.menuItem.name + ", Price: " + root.menuItem.price);
+            System.out.println("Name: " + root.menuItem.name + ", Price: Rs." + root.menuItem.price);
             inorderRec(root.right);
         }
+    }
+    public void updatePBST(String itemName, double newPrice) {
+    try {
+        if (root == null) {
+            throw new NullPointerException("Menu is empty. Cannot update.");
+        }
+         root = updateRecPBST(root, itemName, newPrice);
+        
+    } catch (NullPointerException e) {
+        System.out.println(e.getMessage());
+    }
+}
+
+private TreeNode updateRecPBST(TreeNode root, String itemName, double newPrice) {
+        if (root == null) {
+            System.out.println("Dish " + "(" + itemName + ")" + " not found in the menu");
+            return null;
+        }
+
+        int compareResult = itemName.compareToIgnoreCase(root.menuItem.name);
+
+        if (compareResult < 0) {
+            root.left = updateRecPBST(root.left, itemName, newPrice);
+        } else if (compareResult > 0) {
+            root.right = updateRecPBST(root.right, itemName, newPrice);
+        } else {
+            // Item found, update the price
+            root.menuItem.price = newPrice;
+            System.out.println("Dish " + "(" + itemName + ")" + " updated with new price: Rs." + newPrice);
+        }
+
+        return root;
+    }
+
+    public void delete(String itemName, PriceBinarySearchTree priceBST) {
+    root = deleteRec(root, itemName, priceBST);
+}
+
+private TreeNode deleteRec(TreeNode root, String itemName, PriceBinarySearchTree priceBST) {
+        if (root == null) {
+            System.out.println("Dish " + "(" + itemName + ")" + " not found in the menu");
+            return null;
+        }
+
+        int compareResult = itemName.compareToIgnoreCase(root.menuItem.name);
+
+        if (compareResult < 0) {
+            root.left = deleteRec(root.left, itemName,priceBST);
+        } else if (compareResult > 0) {
+            root.right = deleteRec(root.right, itemName,priceBST);
+        } else {
+            // Item found, delete the node
+            if (root.left == null) {
+                return root.right;
+            } else if (root.right == null) {
+                return root.left;
+            }
+
+            // Node with two children: Get the inorder successor (smallest in the right subtree)
+            root.menuItem = minValue(root.right);
+
+             // Delete the inorder successor
+            root.right = deleteRec(root.right, root.menuItem.name, priceBST);
+        }
+
+        return root;
+    }
+
+    private MenuItem minValue(PriceBinarySearchTree.TreeNode root) {
+        MenuItem minValue = root.menuItem;
+        while (root.left != null) {
+            minValue = root.left.menuItem;
+            root = root.left;
+        }
+        return minValue;
     }
 }
 
@@ -331,6 +405,8 @@ public class RestaurantMenuManagementSystem {
 
                         // Update the price of the specified dish
                         bst.update(dishToUpdate, newPrice);
+                        System.out.println("update price lookup");
+                        priceBST.updatePBST(dishToUpdate, newPrice);
 
                         // Displaying updated menu items in alphabetical order with prices
                         System.out.println("\nUpdated Menu Items in Alphabetical Order:");
@@ -344,6 +420,7 @@ public class RestaurantMenuManagementSystem {
 
                         // Delete specified dish
                         bst.delete(dishToDelete);
+                        priceBST.delete(menuName, priceBST);
 
                         // Display updated menu items in alphabetical order with prices after deletion
                         System.out.println("\nUpdated Menu Items in Alphabetical Order (after deletion):");
@@ -351,7 +428,7 @@ public class RestaurantMenuManagementSystem {
                         break;
                         
                 case 5:
-                        System.out.println("Exiting the program.");
+                        System.out.println("Exit.");
                         break;
 
                 default:
@@ -424,6 +501,8 @@ public class RestaurantMenuManagementSystem {
 
                         // Update the price of the specified dish
                         lunch.update(dishToUpdate, newPrice);
+                        System.out.println("update price lookup");
+                        pricelunchBST.updatePBST(dishToUpdate, newPrice);
 
                         // Displaying updated menu items in alphabetical order with prices
                         System.out.println("\nUpdated Menu Items in Alphabetical Order:");
@@ -444,7 +523,7 @@ public class RestaurantMenuManagementSystem {
                         break;
                         
                 case 5:
-                        System.out.println("Exiting the program.");
+                        System.out.println("Exit.");
                         break;
 
                 default:
@@ -519,6 +598,8 @@ public class RestaurantMenuManagementSystem {
 
                         // Update the price of the specified dish
                         dinner.update(dishToUpdate, newPrice);
+                        System.out.println("update price lookup");
+                        pricedinnerBST.updatePBST(dishToUpdate, newPrice);
 
                         // Displaying updated menu items in alphabetical order with prices
                         System.out.println("\nUpdated Menu Items in Alphabetical Order:");
@@ -539,7 +620,7 @@ public class RestaurantMenuManagementSystem {
                         break;
                         
                 case 5:
-                        System.out.println("Exiting the program.");
+                        System.out.println("Exit.");
                         break;
 
                 default:
@@ -613,6 +694,8 @@ public class RestaurantMenuManagementSystem {
 
                         // Update the price of the specified dish
                         specialpackages.update(dishToUpdate, newPrice);
+                        System.out.println("update price lookup");
+                        price_SP_BST.updatePBST(dishToUpdate, newPrice);
 
                         // Displaying updated menu items in alphabetical order with prices
                         System.out.println("\nUpdated Menu Items in Alphabetical Order:");
@@ -641,6 +724,9 @@ public class RestaurantMenuManagementSystem {
             }
                 }
             while (menuOperationTypeChoice != 5);
+            }
+            else if(menuTypeChoice==5){
+                System.out.println("Exit");
             }
             else {
                         System.out.println("Invalid choice. Please enter a valid option.");
